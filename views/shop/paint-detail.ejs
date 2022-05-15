@@ -1,0 +1,17 @@
+<%- include('../includes/header.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main class="centered">
+            <h1><%= paint.title %></h1>
+            <hr>
+            <div class="image">
+                <img src="<%= paint.imageUrl %>" alt="<%= paint.title %>">
+            </div>
+            <h3><%= paint.price %> €</h3>
+            <p><%= paint.description %></p>
+            <p><%= paint.category.title %></p>
+            
+        </main>
+        <%- include('../includes/footer.ejs') %></body>

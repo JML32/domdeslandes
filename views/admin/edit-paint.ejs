@@ -1,0 +1,51 @@
+<%- include('../includes/header.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/paint.css">
+</head>
+
+<body>
+   <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <form class="product-form" action="/admin/<% if (editing) { %>edit-paint<% } else { %>add-paint<% } %>" method="POST" enctype="multipart/form-data">
+            <div class="form-control">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" value="<% if (editing) { %><%= paint.title %><% } %>">
+            </div>
+            
+            <div class="form-control">
+                <label for="imageUrl">Image URL</label>
+                <input type="file" accept="image/*" name="imageUrl" id="imageUrl" value="<% if (editing) { %> <%= paint.imageUrl %><% } %>">
+            
+            </div>
+            <div class="form-control">
+                <label for="price">Price</label>
+                <input type="number" name="price" id="price" step="0.01" value="<% if (editing) { %><%= paint.price %><% } %>">
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="5"><% if (editing) { %><%= paint.description %><% } %></textarea>
+            </div>
+            <div>
+                <label for="category">Categorie</label>
+                  <select name="category" id="category">
+                    <% if (editing) { %>
+                        <% for (category of categories) { %>
+                        <option value="<%= category.id %>" <% if(paint.category.id === category.id){ %> "selected" <% } %>><%= category.title %>
+                        </option>
+                        <% } %>
+                    <% } else { %>
+                    <% for (category of categories) { %>
+                       <option value="<%= category.id %>"><%= category.title %></option>
+                    <% } } %>
+                </select>
+            </div>
+            
+            <% if (editing) { %>
+                <input type="hidden" value="<%= paint.id %>" name="paintId">
+            <% } %>
+
+            <button class="btn" type="submit"><% if (editing) { %>Update Paint<% } else { %>Add Paint<% } %></button>
+        </form>
+    </main>
+<%- include('../includes/footer.ejs') %>
