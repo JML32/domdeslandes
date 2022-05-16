@@ -1,16 +1,16 @@
 const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");
 const { User } = require("../Util/database");
+require("dotenv").config();
 
-const transporter = nodemailer.createTransport(
-  sendgridTransport({
-    auth: {
-      api_key:
-        "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",
-    },
-  })
-);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PWD, // password configuré dans onglet sécurité de mon compte gmail
+    // mots de passe des applications : appli nodejs
+  },
+});
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash("error");
@@ -94,14 +94,23 @@ exports.postSignup = async (req, res, next) => {
             password: hashedPassword,
           });
         })
-        .then((result) => {
+        .then(async (result) => {
           res.redirect("/login");
-          // return transporter.sendMail({
-          //   to: email,
-          //   from: "shop@node-complete.com",
-          //   subject: "Signup succeeded!",
-          //   html: "<h1>You successfully signed up!</h1>",
-          // });
+          let mailOptions = {
+            from: "lerouxjm3264@gmail.com",
+            to: email,
+            subject: "Sending Email using Node.js",
+            //text:"That was easy!",
+            html: `<h1>That was easy </h1>`,
+          };
+
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("Email sent: " + info.response);
+            }
+          });
         })
         .catch((err) => {
           console.log(err);
