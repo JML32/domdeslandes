@@ -33,6 +33,7 @@
                                     <a href="/admin/edit-paint/<%= paint.id %>?edit=true" class="btn">Edit</a>
                                     <form action="/admin/delete-paint" method="POST">
                                         <input type="hidden" value="<%= paint.id %>" name="paintId">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                         <button class="btn" type="submit">Delete</button>
                                     </form>
 

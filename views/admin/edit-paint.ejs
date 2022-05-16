@@ -44,6 +44,7 @@
             <% if (editing) { %>
                 <input type="hidden" value="<%= paint.id %>" name="paintId">
             <% } %>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
             <button class="btn" type="submit"><% if (editing) { %>Update Paint<% } else { %>Add Paint<% } %></button>
         </form>

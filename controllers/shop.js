@@ -47,8 +47,6 @@ exports.getIndex = (req, res, next) => {
         prods: paints,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: req.session.isLoggedIn,
-        //isAuthenticated: false, // to be changed !
       });
     })
     .catch((err) => {
