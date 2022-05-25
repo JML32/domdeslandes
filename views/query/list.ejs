@@ -1,0 +1,34 @@
+<%- include('../includes/header.ejs') %>
+    <link rel="stylesheet" href="/css/paint.css">
+    </head>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <% if (prods.length > 0) { %>
+                    <div class="grid">
+                        <% for (let query of prods) { %>
+                            <article class="card product-item">
+                                <header class="card__header">
+                                    <h1 class="product__title">
+                                        <%= query.title %>
+                                    </h1>
+                                </header>
+                                <div class="card__image">
+                                    <img src="<%= query.imageUrl %>" alt="<%= query.title %>">
+                                </div>
+                                <div class="card__content">
+                                    <h3 class="product__price">
+                                        <%= query.price %> €
+                                    </h3>
+                                    <p class="product__description">
+                                        <%= query.description %>
+                                    </p>
+                               </div>
+                            </article>
+                            <% } %>
+                    </div>
+                    <% } else { %>
+                        <h1>No Products Found!</h1>
+                        <% } %>
+            </main>
+            <%- include('../includes/footer.ejs') %></body>
