@@ -10,20 +10,45 @@
         <% if (errorMessage) { %>
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
-        <form class="login-form" action="/signup" method="POST">
+        <form class="login-form" action="/signup" method="POST" novalidate>
             <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email">
             </div>
             <div class="form-control">
-                <label for="password">Password</label>
+                <label for="password">Mot de passe</label>
                 <input type="password" name="password" id="password">
             </div>
             <div class="form-control">
-                <label for="confirmPassword">Confirm Password</label>
+                <label for="confirmPassword">Veuillez Confirmer votre mot de passe</label>
                 <input type="password" name="confirmPassword" id="confirmPassword">
             </div>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="form-control">
+                <label for="name">Nom </label>
+                <input type="text" name="name" id="name">
+            </div>
+            <div class="form-control">
+                <label for="address">Adresse </label>
+                <input type="text" name="address" id="address">
+            </div>
+            <div class="form-control">
+                <label for="city">Ville </label>
+                <input type="text" name="city" id="city">
+            </div>
+            <div class="form-control">
+                <label for="postalCode">code postal </label>
+                <input type="text" name="postalCode" id="postalCode">
+            </div>
+            <div class="form-control">
+                <label for="state">Département </label>
+                <input type="text" name="state" id="state">
+            </div>
+            <div class="form-control">
+                <label for="country">Pays </label>
+                <input type="text" name="country" id="country">
+            </div>
+            
+            
             <button class="btn" type="submit">Signup</button>
         </form>
     </main>

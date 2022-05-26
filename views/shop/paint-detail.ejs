@@ -12,6 +12,9 @@
             <h3><%= paint.price %> €</h3>
             <p><%= paint.description %></p>
             <p><%= paint.category.title %></p>
+            <% if (isAuthenticated) { %>
+                <%- include('../includes/add-to-cart.ejs', {paint: paint}) %>
+            <% } %>
             
         </main>
         <%- include('../includes/footer.ejs') %></body>

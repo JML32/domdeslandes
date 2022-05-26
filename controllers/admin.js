@@ -9,7 +9,7 @@ const multerStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
-    cb(null, `${Date.now()}.${ext}`);
+    cb(null, `${file.originalname}-${Date.now()}.${ext}`);
   },
 });
 
@@ -158,6 +158,18 @@ exports.postDeletePaint = (req, res, next) => {
 };
 
 // Category controller
+exports.getCategories = (req, res, next) => {
+  Category.findAll().then((categories) => {
+    res
+      .render("admin/categories", {
+        prods: categories,
+        pageTitle: "Admin Categories",
+        path: "/admin/categories",
+      })
+      .catch((err) => console.log(err));
+  });
+};
+
 exports.getAddCategory = (req, res, next) => {
   res.render("admin/edit-category", {
     pageTitle: "Add Category",
@@ -181,14 +193,52 @@ exports.postAddCategory = (req, res, next) => {
     });
 };
 
-exports.getCategories = (req, res, next) => {
-  Category.findAll().then((categories) => {
-    res
-      .render("admin/categories", {
-        prods: categories,
-        pageTitle: "Admin Categories",
-        path: "/admin/categories",
-      })
-      .catch((err) => console.log(err));
-  });
+exports.getEditCategory = (req, res, next) => {
+  const editMode = req.query.edit;
+
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const prodId = req.params.categoryId;
+  //req.user
+  //.getPaints({ where: { id: prodId } })
+  //Paint.findByPk(prodId)
+  Category.findByPk(prodId)
+    .then((category) => {
+      res.render("admin/edit-category", {
+        pageTitle: "Edit Category",
+        path: "/admin/edit-category",
+        editing: editMode,
+        category: category,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postEditCategory = (req, res, next) => {
+  const prodId = req.body.categoryId;
+  const updatedTitle = req.body.title;
+  Category.findByPk(prodId)
+    .then((category) => {
+      category.title = updatedTitle;
+      return category.save();
+    })
+    .then((result) => {
+      console.log("UPDATED Category!");
+      res.redirect("/admin/categories");
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postDeleteCategory = (req, res, next) => {
+  const prodId = req.body.categoryId;
+  Category.findByPk(prodId)
+    .then((category) => {
+      return category.destroy();
+    })
+    .then((result) => {
+      console.log("DESTROYED Category");
+      res.redirect("/admin/categories");
+    })
+    .catch((err) => console.log(err));
 };

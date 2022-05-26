@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { createInvoice } = require("../Util/createinvoice");
+const stripe = require("stripe");
 
 const {
   Paint,
@@ -215,6 +216,7 @@ exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
 
   User.findOne({ where: { id: req.session.user.id } }).then((user) => {
+    const userInfos = user;
     user
       .getOrders({ where: { id: orderId }, include: ["paints"] })
       .then((order) => {
@@ -223,33 +225,29 @@ exports.getInvoice = (req, res, next) => {
         }
         const invoiceName = "invoice-" + orderId + ".pdf";
         const invoicePath = path.join("public", "invoices", invoiceName);
-        console.log("********************************");
-        console.log("peintures de la cde :", order.getPaints);
-        console.log("********************************");
+
+        const paintsOrdersArray = order.map((item) => ({
+          id: item.id,
+          paints: item.paints,
+        }));
+        let paintsOrderArray = [];
+        for (let i = 0; i < paintsOrdersArray.length; i++) {
+          if (paintsOrdersArray[i].id == orderId) {
+            paintsOrderArray.push(paintsOrdersArray[i].paints);
+            paintsOrderArray.push(paintsOrdersArray[i].paints.orderItem);
+          }
+        }
+
         invoice = {
           shipping: {
-            name: "John Doe",
-            address: "1234 Main Street",
-            city: "San Francisco",
-            state: "CA",
-            country: "US",
-            postal_code: 94111,
+            name: userInfos.name,
+            address: userInfos.address,
+            city: userInfos.city,
+            state: userInfos.state,
+            country: userInfos.country,
+            postal_code: userInfos.postalCode,
           },
-          items: [
-            {
-              item: "TC 100",
-              description: "Toner Cartridge",
-              quantity: 2,
-              amount: 6000,
-            },
-            {
-              item: "USB_EXT",
-              description: "USB Cable Extender",
-              quantity: 1,
-              amount: 2000,
-            },
-          ],
-          subtotal: 8000,
+          items: paintsOrderArray,
           paid: 0,
           invoice_nr: orderId,
         };

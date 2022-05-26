@@ -4,11 +4,11 @@
   <nav class="main-header__nav">
     <ul class="main-header__item-list">
       <li class="main-header__item">
-        <a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a>
+        <a class="<%= path === '/paints' ? 'active' : '' %>" href="/">Paints</a>
       </li>
       <li class="main-header__item">
-        <a class="<%= path === '/products' ? 'active' : '' %>" href="/paints"
-          >Paints</a
+        <a class="<%= path === '/queries' ? 'active' : '' %>" href="/query"
+          >Queries</a
         >
       </li>
       <% if (isAuthenticated) { %>
@@ -35,6 +35,21 @@
           >Admin Paints
         </a>
       </li>
+
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/admin/add-category' ? 'active' : '' %>"
+          href="/admin/add-category"
+          >Add Category
+        </a>
+      </li>
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/admin/categories' ? 'active' : '' %>"
+          href="/admin/categories"
+          >Admin Categories
+        </a>
+      </li>
       <% } %>
     </ul>
     <ul class="main-header__item-list">
@@ -53,7 +68,6 @@
 
       <li class="main-header__item">
         <form action="/logout" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <button type="submit">Logout</button>
         </form>
       </li>
@@ -65,12 +79,7 @@
 <nav class="mobile-nav">
   <ul class="mobile-nav__item-list">
     <li class="mobile-nav__item">
-      <a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a>
-    </li>
-    <li class="mobile-nav__item">
-      <a class="<%= path === '/products' ? 'active' : '' %>" href="/paints"
-        >Paints</a
-      >
+      <a class="<%= path === '/products' ? 'active' : '' %>" href="/">Paints</a>
     </li>
     <% if (isAuthenticated) { %>
 
@@ -96,6 +105,20 @@
         >Admin Paints
       </a>
     </li>
+    <li class="main-header__item">
+      <a
+        class="<%= path === '/admin/add-product' ? 'active' : '' %>"
+        href="/admin/add-category"
+        >Add Category
+      </a>
+    </li>
+    <li class="main-header__item">
+      <a
+        class="<%= path === '/admin/paints' ? 'active' : '' %>"
+        href="/admin/categories"
+        >Admin Categories
+      </a>
+    </li>
     <% } %> <% if (!isAuthenticated) { %>
 
     <li class="mobile-nav__item">
@@ -111,7 +134,6 @@
 
     <li class="mobile-nav__item">
       <form action="/logout" method="post">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <button type="submit">Logout</button>
       </form>
     </li>

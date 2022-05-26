@@ -19,7 +19,7 @@
                                     <a href="/admin/edit-category/<%= category.id %>?edit=true" class="btn">Edit</a>
                                     <form action="/admin/delete-category" method="POST">
                                         <input type="hidden" value="<%= category.id %>" name="categoryId">
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        
                                         <button class="btn" type="submit">Delete</button>
                                     </form>
 

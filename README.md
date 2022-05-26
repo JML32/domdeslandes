@@ -1,12 +1,28 @@
 # domdeslandes
 
-## project setup with node.js, express, sequelize with dialect mysql
+## project setup with node.js, express, sequelize with dialect mysql - MVC pattern
 
-### **prerequisites before launching this project :**
+> including these features :
+>
+> - CORS
+> - CSRF attacks prevention (TO BE REVIEWED)
+> - sessions
+> - reset password
+> - user roles
+> - mailing (via gmail services)
+> - flash messages
+> - Upload files
+> - users keyin validations
+> - backend with mysql database thru ORM Sequelize
+> - pagination
+> - cart & payment process (stripe)
+> - PDF Invoices files generation thru library js pdfkit
 
-> #### create a .env file with the following parameters :
+#### **prerequisites before launching this project :**
 
-> ##### DB SEQUELIZE parameters :
+> ##### create a .env file with the following parameters :
+
+> ###### DB SEQUELIZE parameters :
 >
 > - DB_NAME =
 > - DB_USER =
@@ -15,7 +31,7 @@
 > - DB_HOST =
 > - DB_PORT =
 
-> ##### mailing parameters , mailing services provided by gmail :
+> ###### mailing parameters , mailing services provided by gmail :
 >
 > - MAIL_USER = gmail email's owner
 > - MAIL_PWD = (password from others applications in the gmail security menu )

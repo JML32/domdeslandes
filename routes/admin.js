@@ -3,13 +3,14 @@ const express = require("express");
 
 const adminController = require("../controllers/admin");
 const isAuth = require("../middleware/is-auth");
+const isPerm = require("../middleware/is-perm");
 const router = express.Router();
 
 // ADMIN PAINTS
-// /admin/add-product => GET
-router.get("/add-paint", isAuth, adminController.getAddPaint);
 // /admin/products => GET
 router.get("/paints", isAuth, adminController.getPaints);
+// /admin/add-product => GET
+router.get("/add-paint", isAuth, isPerm, adminController.getAddPaint);
 // /admin/add-product => POST
 router.post(
   "/add-paint",
@@ -17,7 +18,6 @@ router.post(
   adminController.uploadPaintPhoto,
   adminController.postAddPaint
 );
-
 // router.post(
 //   "/add-paint",
 //   adminController.uploadPaintPhoto,
@@ -30,8 +30,17 @@ router.post("/delete-paint", isAuth, adminController.postDeletePaint);
 
 // ADMIN CATEGORIES
 router.get("/categories", isAuth, adminController.getCategories);
+
 router.get("/add-category", isAuth, adminController.getAddCategory);
-// /admin/add-product => POST
 router.post("/add-category", isAuth, adminController.postAddCategory);
+
+router.get(
+  "/edit-category/:categoryId",
+  isAuth,
+  adminController.getEditCategory
+);
+router.post("/edit-category", isAuth, adminController.postEditCategory);
+
+router.post("/delete-category", isAuth, adminController.postDeleteCategory);
 
 module.exports = router;

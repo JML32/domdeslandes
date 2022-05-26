@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const order = require("../models/order");
 const { createInvoice } = require("../Util/createinvoice");
 
 const {
@@ -48,13 +49,28 @@ const {
 exports.getQuery = (req, res, next) => {
   User.findOne({ where: { id: 2 } })
     .then((user) => {
-      user.getOrders({ include: Paint }).then((orders) => {
-        res.json(orders);
-        const paintsArray = orders.map((item) => ({
+      user.getOrders({ include: Paint }).then((order) => {
+        const paintsOrdersArray = order.map((item) => ({
           id: item.id,
           paints: item.paints,
         }));
-        console.log("paintsTitle : ", paintsArray);
+        let paintsOrderArray = [];
+        for (let i = 0; i < paintsOrdersArray.length; i++) {
+          if (paintsOrdersArray[i].id == 10) {
+            paintsOrderArray.push(paintsOrdersArray[i].paints);
+            paintsOrderArray.push(paintsOrdersArray[i].paints.orderItem);
+          }
+        }
+        res.json(paintsOrderArray);
+
+        for (i = 0; i < paintsOrderArray.length; i++) {
+          for (j = 0; j < paintsOrderArray[i].length; j++) {
+            let paintTitle = paintsOrderArray[i][j].title;
+            let paintQty = paintsOrderArray[i][j].orderItem.quantity;
+            console.log(paintTitle);
+            console.log(paintQty);
+          }
+        }
       });
     })
     .catch((err) => console.log(err));

@@ -4,7 +4,6 @@ const favicon = require("serve-favicon");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const session = require("express-session");
-const csrf = require("csurf");
 const flash = require("connect-flash");
 
 const errorController = require("./controllers/error");
@@ -38,15 +37,10 @@ app
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const csrfProtection = csrf();
-
-app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-  (res.locals.isAuthenticated = req.session.isLoggedIn),
-    (res.locals.csrfToken = req.csrfToken());
-  next();
+  (res.locals.isAuthenticated = req.session.isLoggedIn), next();
 });
 
 app.use("/admin", adminRoutes);

@@ -41,12 +41,12 @@ function generateCustomerInformation(doc, invoice) {
     .font("Helvetica")
     .text("Invoice Date:", 50, customerInformationTop + 15)
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
-    .text("Balance Due:", 50, customerInformationTop + 30)
-    .text(
-      formatCurrency(invoice.subtotal - invoice.paid),
-      150,
-      customerInformationTop + 30
-    )
+    //.text("Balance Due:", 50, customerInformationTop + 30)
+    //.text(
+    //  formatCurrency(invoice.subtotal - invoice.paid),
+    //  150,
+    //  customerInformationTop + 30
+    //)
 
     .font("Helvetica-Bold")
     .text(invoice.shipping.name, 300, customerInformationTop)
@@ -68,9 +68,11 @@ function generateCustomerInformation(doc, invoice) {
 
 function generateInvoiceTable(doc, invoice) {
   let i;
+  let subTotal = 0;
   const invoiceTableTop = 330;
 
-  doc.font("Helvetica-Bold");
+  doc.font("Helvetica-Bold").fontSize(50);
+
   generateTableRow(
     doc,
     invoiceTableTop,
@@ -81,22 +83,32 @@ function generateInvoiceTable(doc, invoice) {
     "Line Total"
   );
   generateHr(doc, invoiceTableTop + 20);
-  doc.font("Helvetica");
+  doc.font("Helvetica").fontSize(5);
 
-  for (i = 0; i < invoice.items.length; i++) {
-    const item = invoice.items[i];
+  //for (i = 0; i < invoice.items.length; i++) {
+  //const item = invoice.items[i];
+  const item = invoice.items[0];
+
+  for (i = 0; i < item.length; i++) {
+    paintTitle = item[i].title;
+    paintPrice = item[i].price;
+    paintDesc = item[i].description;
+    paintQty = item[i].orderItem.quantity;
+    subTotal += paintPrice * paintQty;
+
     const position = invoiceTableTop + (i + 1) * 30;
     generateTableRow(
       doc,
       position,
-      item.item,
-      item.description,
-      formatCurrency(item.amount / item.quantity),
-      item.quantity,
-      formatCurrency(item.amount)
+      paintTitle.substr(0, 20),
+      paintDesc.substr(0, 30),
+      formatCurrency(paintPrice),
+      paintQty,
+      formatCurrency(paintPrice * paintQty)
     );
 
     generateHr(doc, position + 20);
+    //}
   }
 
   const subtotalPosition = invoiceTableTop + (i + 1) * 30;
@@ -107,7 +119,7 @@ function generateInvoiceTable(doc, invoice) {
     "",
     "Subtotal",
     "",
-    formatCurrency(invoice.subtotal)
+    formatCurrency(subTotal)
   );
 
   const paidToDatePosition = subtotalPosition + 20;
@@ -130,7 +142,7 @@ function generateInvoiceTable(doc, invoice) {
     "",
     "Balance Due",
     "",
-    formatCurrency(invoice.subtotal - invoice.paid)
+    formatCurrency(subTotal - invoice.paid)
   );
   doc.font("Helvetica");
 }
@@ -169,15 +181,15 @@ function generateHr(doc, y) {
 }
 
 function formatCurrency(cents) {
-  return "$" + (cents / 100).toFixed(2);
+  return cents.toFixed(2) + " €";
 }
 
 function formatDate(date) {
   const day = date.getDate();
-  const month = date.getMonth() + 1;
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const year = date.getFullYear();
 
-  return year + "/" + month + "/" + day;
+  return day + "/" + month + "/" + year;
 }
 
 module.exports = {
