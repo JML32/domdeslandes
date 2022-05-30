@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
+const order = require("../models/order");
+require("dotenv").config();
 const { createInvoice } = require("../Util/createinvoice");
-const stripe = require("stripe");
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 const {
   Paint,
@@ -264,74 +266,97 @@ exports.getInvoice = (req, res, next) => {
 exports.getCheckout = (req, res, next) => {
   let products;
   let total = 0;
-  req.user
-    .populate("cart.items.productId")
-    .execPopulate()
-    .then((user) => {
-      products = user.cart.items;
-      total = 0;
-      products.forEach((p) => {
-        total += p.quantity * p.productId.price;
-      });
 
-      return stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: products.map((p) => {
-          return {
-            name: p.productId.title,
-            description: p.productId.description,
-            amount: p.productId.price * 100,
-            currency: "usd",
-            quantity: p.quantity,
-          };
-        }),
-        success_url:
-          req.protocol + "://" + req.get("host") + "/checkout/success", // => http://localhost:3000
-        cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+  const orderId = req.params.orderId;
+
+  User.findOne({ where: { id: req.session.user.id } }).then((user) => {
+    user
+      .getOrders({ include: ["paints"] })
+      .then((order) => {
+        const paintsOrdersArray = order.map((item) => ({
+          id: item.id,
+          paints: item.paints,
+        }));
+
+        let paintsOrderArray = [];
+        for (let i = 0; i < paintsOrdersArray.length; i++) {
+          if (paintsOrdersArray[i].id == orderId) {
+            paintsOrderArray.push(paintsOrdersArray[i].paints);
+            paintsOrderArray.push(paintsOrdersArray[i].paints.orderItem);
+          }
+        }
+
+        products = paintsOrderArray[0];
+
+        total = 0;
+        // products.forEach((product) => {
+        //   total += product.orderItem.quantity * product.price;
+        // });
+
+        //res.json(products);
+        return stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: products.map((p) => {
+            return {
+              name: p.title,
+              description: p.description,
+              amount: p.price * 100,
+              currency: "eur",
+              quantity: p.orderItem.quantity,
+            };
+          }),
+          success_url:
+            req.protocol + "://" + req.get("host") + "/checkout/success", // => http://localhost:3000
+          cancel_url:
+            req.protocol + "://" + req.get("host") + "/checkout/cancel",
+        });
+      })
+      .then((session) => {
+        res.render("shop/checkout", {
+          path: "/checkout",
+          pageTitle: "Checkout",
+          products: products,
+          //totalSum: total,
+          totalSum: total,
+          sessionId: session.id,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
       });
-    })
-    .then((session) => {
-      res.render("shop/checkout", {
-        path: "/checkout",
-        pageTitle: "Checkout",
-        products: products,
-        totalSum: total,
-        sessionId: session.id,
-      });
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  });
 };
 
 exports.getCheckoutSuccess = (req, res, next) => {
-  req.user
-    .populate("cart.items.productId")
-    .execPopulate()
-    .then((user) => {
-      const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
-      });
-      const order = new Order({
-        user: {
-          email: req.user.email,
-          userId: req.user,
-        },
-        products: products,
-      });
-      return order.save();
-    })
-    .then((result) => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  return res.redirect("/");
+  // return res.redirect("/").catch((err) => {
+  //   const error = new Error(err);
+  //   error.httpStatusCode = 500;
+  //   return next(error);
+  // });
+  // const order = new Order({
+  //   user: {
+  //     email: req.session.user.email,
+  //     userId: req.session.user,
+  //   },
+  //   products: products,
+  // });
+  // return (
+  //   order
+  //     .save()
+  //     //})
+  //     .then((result) => {
+  //       return req.user.clearCart();
+  //     })
+  //     .then(() => {
+  //       res.redirect("/orders");
+  //     })
+  //     .catch((err) => {
+  //       const error = new Error(err);
+  //       error.httpStatusCode = 500;
+  //       return next(error);
+  //     })
+  // );
 };

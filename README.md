@@ -5,7 +5,7 @@
 > including these features :
 >
 > - CORS
-> - CSRF attacks prevention (TO BE REVIEWED)
+> - CSRF attacks prevention (coming soon)
 > - sessions
 > - reset password
 > - user roles
@@ -15,7 +15,7 @@
 > - users keyin validations
 > - backend with mysql database thru ORM Sequelize
 > - pagination
-> - cart & payment process (stripe)
+> - cart & payment process (stripe) (coming soon)
 > - PDF Invoices files generation thru library js pdfkit
 
 #### **prerequisites before launching this project :**
@@ -35,3 +35,7 @@
 >
 > - MAIL_USER = gmail email's owner
 > - MAIL_PWD = (password from others applications in the gmail security menu )
+
+> ###### Stripe parameters :
+>
+> - STRIPE_KEY = from Stripe owner's account

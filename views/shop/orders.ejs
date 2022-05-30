@@ -12,8 +12,7 @@
                         <li>
                             <h3># <%= order.id %> 
                                 <a href="/orders/<%= order.id %>"> Invoice </a>
-                                <input type="hidden" value="<%= order.id %>" name="orderId">
-                                <a href="/checkout"> Paiement avec Stripe </a>
+                                <!--<a href="/checkout/<%#= order.id %>"> Paiement avec Stripe </a>-->
                             </h3>
                             <ul>
                                 <% order.paints.forEach(paint => { %>
